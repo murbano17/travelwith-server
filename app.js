@@ -11,6 +11,7 @@ const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
 
 const auth = require("./routes/auth");
+const travelRouter = require("./routes/travel");
 
 // MONGOOSE CONNECTION
 mongoose
@@ -45,13 +46,13 @@ app.use(
   session({
     store: new MongoStore({
       mongooseConnection: mongoose.connection,
-      ttl: 24 * 60 * 60, // 1 day
+      // ttl: 24 * 60 * 60, // 1 day
     }),
     secret: process.env.SECRET_SESSION,
     resave: true,
     saveUninitialized: true,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 10 * 60 * 1000,
     },
   })
 );
@@ -65,6 +66,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTER MIDDLEWARE
 app.use("/", auth);
+app.use('/travel', travelRouter)
 
 // ERROR HANDLING
 // catch 404 and forward to error handler
