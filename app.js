@@ -12,6 +12,8 @@ const cors = require("cors");
 
 const auth = require("./routes/auth");
 const travelRouter = require("./routes/travel");
+const taskRouter = require('./routes/task');
+const profileRouter = require('./routes/profile');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -66,7 +68,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTER MIDDLEWARE
 app.use("/", auth);
-app.use('/travel', travelRouter)
+app.use('/travel', travelRouter);
+app.use('/task', taskRouter);
+app.use('/profile', profileRouter);
+
+
 
 // ERROR HANDLING
 // catch 404 and forward to error handler
