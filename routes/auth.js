@@ -13,7 +13,7 @@ const {
   validationLoggin,
 } = require("../helpers/middlewares");
 
-//Signup POST
+//Signup /POST
 router.post(
   "/signup",
   isNotLoggedIn(),
