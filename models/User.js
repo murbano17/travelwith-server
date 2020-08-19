@@ -3,16 +3,16 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
-    email: String,
-    password: String,
-    username: String,
+    email: {type: String, required: true},
+    password: {type: String, required: true},
+    username: {type: String, required: true},
     profilePic: {
       type: String,
       default: "./images/profile-picture.png",
     },
-    userFrom: String,
-    userAge: Number,
-    about: String,
+    userFrom: {type: String, default: null},
+    userAge: {type: Number, default: null},
+    about: {type: String, default: null},
     ownTravels: [
       {
         type: Schema.Types.ObjectId,

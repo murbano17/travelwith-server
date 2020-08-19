@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
-const { schema } = require("./user");
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema(
   {
-    taskName: String,
+    taskName: {type: String, required: true},
     taskCreator: { type: Schema.Types.ObjectId, ref: "User" },
     taskDeadline: { type: Date, default: null },
-    taskNote: String,
-    asignTo: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    taskNote: {type: String, default: null},
+    assignTo: [{ type: Schema.Types.ObjectId, ref: "User", default: null }],
     doneTask: { type: Boolean, default: false },
+    completedBy: {type: Schema.Types.ObjectId, ref: 'User', default: null}
   },
   {
     timestamps: {
