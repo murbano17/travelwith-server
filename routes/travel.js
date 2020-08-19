@@ -1,10 +1,8 @@
 const express = require("express");
 const travelRouter = express.Router();
 const createError = require("http-errors");
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
-const User = require("../models/user");
 const parser = require("./../config/cloudinary");
+const Travel = require("../models/Travel");
 
 // helper functions
 const {
@@ -12,7 +10,6 @@ const {
   isNotLoggedIn,
   validationLoggin,
 } = require("../helpers/middlewares");
-const Travel = require("../models/Travel");
 
 // POST createTravel
 travelRouter.post(
@@ -43,11 +40,13 @@ travelRouter.post(
         endDate,
         origin,
         destination,
+        owner: req.session.currentUser._id,
+        travelMembers: [req.session.currentUser._id],
       });
       res.status(200).json(newTravel);
       return;
     } catch (error) {
-      console.log(error);
+      console.log('Error while creating new travel.',error);
     }
   }
 );
@@ -61,7 +60,7 @@ travelRouter.post(
     const travelId = req.params.id;
     const { travelName, startDate, endDate, origin, destination } = req.body;
     // const coverPic = req.file ? req.file.secure_url : travelFound.coverPic;
-    
+
     try {
       const travelFound = await Travel.findByIdAndUpdate(
         travelId,
@@ -69,14 +68,28 @@ travelRouter.post(
         { new: true }
       );
 
-      res.status(200).json(travelFound)
+      res.status(200).json(travelFound);
       return;
     } catch (error) {
-        console.log(error);
+      console.log('Error while editing travel', error);
     }
   }
 );
 
-//
+//POST deleteTravel
+travelRouter.post("/delete/:id", isLoggedIn(), async (req, res, next) => {
+  const travelId = req.params.id;
+
+  try {
+    const travelFound = await Travel.findById(travelId);
+    if (travelFound.owner == req.session.currentUser._id) {
+      await Travel.findByIdAndDelete(travelId);
+      res.status(200).json({ message: "Travel erased successfully." });
+      return;
+    }
+  } catch (error) {
+    console.log('Error while deleting travel', error);
+  }
+});
 
 module.exports = travelRouter;
