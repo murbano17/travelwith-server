@@ -9,7 +9,6 @@ const {
   isNotLoggedIn,
   validationLoggin,
 } = require("../helpers/middlewares");
-const { findById } = require("../models/user");
 
 //POST editProfile
 
@@ -18,7 +17,7 @@ profileRouter.post(
   isLoggedIn(),
   parser.single("profilePic"),
   async (req, res, next) => {
-    const { username, userFrom, userAge, about } = req.body;
+    const { username, userFrom, userBirthdate, about } = req.body;
     const profilePic = req.file
       ? req.file.secure_url
       : req.session.currentUser.profilePic;
@@ -28,7 +27,7 @@ profileRouter.post(
       if (userId == req.session.currentUser._id) {
         const userFound = await User.findByIdAndUpdate(
           userId,
-          { username, userFrom, userAge, about, profilePic },
+          { username, userFrom, userBirthdate, about, profilePic },
           { new: true }
         );
         if (userFound) {

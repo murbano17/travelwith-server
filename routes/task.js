@@ -14,25 +14,25 @@ const {
 
 //POST createTask
 
-taskRouter.post("/create", isLoggedIn(), async (req, res, next) => {
-  const { taskName, taskDeadline, assignTo } = req.body;
-  try {
-    if (taskName === "") {
-      next(createError(400));
-    }
+// taskRouter.post("/create", isLoggedIn(), async (req, res, next) => {
+//   const { taskName, taskDeadline, assignTo } = req.body;
+//   try {
+//     if (taskName === "") {
+//       next(createError(400));
+//     }
 
-    const newTask = await Task.create({
-      taskName,
-      taskDeadline,
-      assignTo,
-      taskCreator: req.session.currentUser._id,
-    });
-    res.status(200).json(newTask);
-    return;
-  } catch (error) {
-    console.log("Error while creating task", error);
-  }
-});
+//     const newTask = await Task.create({
+//       taskName,
+//       taskDeadline,
+//       assignTo,
+//       taskCreator: req.session.currentUser._id,
+//     });
+//     res.status(200).json(newTask);
+//     return;
+//   } catch (error) {
+//     console.log("Error while creating task", error);
+//   }
+// });
 
 //POST editTask
 

@@ -3,6 +3,9 @@ const travelRouter = express.Router();
 const createError = require("http-errors");
 const parser = require("./../config/cloudinary");
 const Travel = require("../models/Travel");
+const User = require("../models/user");
+const Invite = require("../models/Invite");
+const Task = require("../models/Task");
 
 // helper functions
 const {
@@ -11,6 +14,7 @@ const {
   validationLoggin,
 } = require("../helpers/middlewares");
 const { response } = require("express");
+const inviteRoute = require("./invite");
 
 // POST createTravel
 travelRouter.post(
@@ -135,6 +139,103 @@ travelRouter.get("/:id", isLoggedIn(), async (req, res, next) => {
     }
   } catch (error) {
     console.log("Error while searching travel");
+  }
+});
+
+//POST /createinvite
+travelRouter.post("/:id/createinvite", isLoggedIn(), async (req, res, next) => {
+  const userId = req.session.currentUser._id;
+  const { guestEmail } = req.body;
+  const inviteTo = req.params.id;
+  try {
+    const newInvite = await Invite.create({ guestEmail, userId, inviteTo });
+    if (!newInvite) {
+      res.status(400).json({ message: "Error in invite creation" });
+      return;
+    } else {
+      const travelFound = await Travel.findByIdAndUpdate(
+        inviteTo,
+        { $push: { invitationList: newInvite } },
+        { new: true }
+      );
+      const userFound = await User.findByIdAndUpdate(
+        userId,
+        { $push: { pendingInvitation: newInvite } },
+        { new: true }
+      );
+      res.status(200).json(newInvite);
+      return;
+    }
+  } catch (error) {
+    console.log("Error while creating invite", error);
+  }
+});
+
+//POST /:id/createtask
+travelRouter.post("/:id/createtask", isLoggedIn(), async (req, res, next) => {
+  const { taskName, taskDeadline, assignTo } = req.body;
+  const travelId = req.params.id;
+  try {
+    if (taskName === "") {
+      next(createError(400));
+    }
+    const newTask = await Task.create({
+      taskName,
+      taskDeadline,
+      assignTo,
+      includesInTravel: travelId,
+      taskCreator: req.session.currentUser._id,
+    });
+    const travelFound = await Travel.findByIdAndUpdate(
+      travelId,
+      { $push: { tasks: newTask } },
+      { new: true }
+    );
+    res.status(200).json(travelFound);
+    return;
+  } catch (error) {
+    console.log("Error while creating task", error);
+  }
+});
+
+//POST joinTravel
+travelRouter.post("/:id/join", isLoggedIn(), async (req, res, next) => {
+  const travelId = req.params.id;
+  const userId = req.session.currentUser._id;
+
+  try {
+    const userFound = await User.findByIdAndUpdate(
+      userId,
+      { $push: { joinTravels: travelId } },
+      { new: true }
+    );
+    const travelFound = await Travel.findByIdAndUpdate(
+      travelId,
+      { $push: { travelMembers: userId } },
+      { new: true }
+    );
+    if (!userFound) {
+      res.status(400).json({ message: "User not found" });
+      return;
+    } else {
+      const invitationFound = await Invite.findOne({
+        guestEmail: userFound.email,
+        inviteTo: travelFound._id,
+      });
+      if (!invitationFound) {
+        next();
+      }
+
+      const updateInvitationList = await Travel.findByIdAndUpdate(
+        travelFound._id,
+        { $pull: { invitationList: invitationFound._id } },
+        { new: true }
+      );
+      res.status(200).json(userFound);
+      return;
+    }
+  } catch (error) {
+    console.log("Error while joining a travel.", error);
   }
 });
 

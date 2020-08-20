@@ -28,6 +28,10 @@ const travelSchema = new Schema(
         ref: "User",
       },
     ],
+    invitationList: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Invite',
+    }],
     messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
   },
   {

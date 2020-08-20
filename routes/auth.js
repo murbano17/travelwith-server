@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const User = require("../models/user");
 const parser = require("./../config/cloudinary");
+const Travel = require("../models/Travel");
 
 // helper functions
 const {
@@ -12,6 +13,7 @@ const {
   isNotLoggedIn,
   validationLoggin,
 } = require("../helpers/middlewares");
+const Invite = require("../models/Invite");
 
 //Signup /POST
 router.post(
@@ -23,22 +25,33 @@ router.post(
     const profilePic = req.file
       ? req.file.secure_url
       : "./images/profile-picture.png";
-    const { username, password, email, userFrom, userAge, about } = req.body;
+    const {
+      username,
+      password,
+      email,
+      userFrom,
+      userBirthdate,
+      about,
+    } = req.body;
     try {
       const emailExists = await User.findOne({ email }, "email");
       if (emailExists) return next(createError(400));
       else {
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashPass = bcrypt.hashSync(password, salt);
+        const emailHasInvitation = await Invite.find({ guestEmail: email });
+        
         const newUser = await User.create({
           username,
           password: hashPass,
           email,
           profilePic,
           userFrom,
-          userAge,
+          userBirthdate,
           about,
+          pendingInvitation: emailHasInvitation ? emailHasInvitation : null,
         });
+
         req.session.currentUser = newUser;
         res.status(200).json(newUser);
       }
@@ -47,9 +60,6 @@ router.post(
     }
   }
 );
-
-//POST editprofile
-
 
 //login POST
 router.post(
@@ -86,7 +96,5 @@ router.post("/logout", isLoggedIn(), (req, res, next) => {
 router.get("/", isLoggedIn(), (req, res, next) => {
   res.status(200).json({ message: "User is logged in " });
 });
-
-
 
 module.exports = router;

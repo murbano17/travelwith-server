@@ -11,8 +11,13 @@ const userSchema = new Schema(
       default: "./images/profile-picture.png",
     },
     userFrom: {type: String, default: null},
-    userAge: {type: Number, default: null},
+    userBirthdate: {type: Date, default: null},
     about: {type: String, default: null},
+    invitationCode: {type: String, default: null},
+    pendingInvitation: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Invite'
+    }],
     ownTravels: [
       {
         type: Schema.Types.ObjectId,
