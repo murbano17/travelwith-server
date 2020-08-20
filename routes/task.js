@@ -40,35 +40,56 @@ taskRouter.post("/edit/:id", isLoggedIn(), async (req, res, next) => {
   const taskId = req.params.id;
   const { taskName, taskDeadline, assignTo, taskNote } = req.body;
   try {
-    const taskFound = await Task.findByIdAndUpdate(taskId, {
-      taskName,
-      taskDeadline,
-      assignTo,
-      taskNote,
-    }, {new: true});
-    if(taskFound) {
-        res.status(200).json(taskFound)
-        return;
+    const taskFound = await Task.findByIdAndUpdate(
+      taskId,
+      {
+        taskName,
+        taskDeadline,
+        assignTo,
+        taskNote,
+      },
+      { new: true }
+    );
+    if (taskFound) {
+      res.status(200).json(taskFound);
+      return;
     }
   } catch (error) {
-      console.log('Error while editing a task.', error);
+    console.log("Error while editing a task.", error);
   }
 });
 
 //POST deleteTask
 taskRouter.post("/delete/:id", isLoggedIn(), async (req, res, next) => {
-    const taskId = req.params.id;
-  
-    try {
-      const taskFound = await Task.findById(taskId);
-      if (taskFound.taskCreator == req.session.currentUser._id) {
-        await Task.findByIdAndDelete(taskId);
-        res.status(200).json({ message: "Task erased successfully." });
-        return;
-      }
-    } catch (error) {
-      console.log('Error while deleting task', error);
+  const taskId = req.params.id;
+
+  try {
+    const taskFound = await Task.findById(taskId);
+    if (taskFound.taskCreator == req.session.currentUser._id) {
+      await Task.findByIdAndDelete(taskId);
+      res.status(200).json({ message: "Task erased successfully." });
+      return;
     }
-  });
+  } catch (error) {
+    console.log("Error while deleting task", error);
+  }
+});
+
+//GET task/:id
+
+taskRouter.get("/:id", isLoggedIn(), async (req, res, next) => {
+  const taskId = req.params.id;
+  try {
+    const taskFound = await Task.findById(taskId);
+    if (!taskFound) {
+      res.status(400).json({ message: "Task not found" });
+      return;
+    } else {
+      res.status(200).json(taskFound);
+    }
+  } catch (error) {
+    console.log("Error while searching task");
+  }
+});
 
 module.exports = taskRouter;

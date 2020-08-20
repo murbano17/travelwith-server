@@ -3,13 +3,13 @@ const parser = require("./../config/cloudinary");
 const profileRouter = express.Router();
 const User = require("../models/user");
 
-
-// helper functions
+// HELPER functions
 const {
   isLoggedIn,
   isNotLoggedIn,
   validationLoggin,
 } = require("../helpers/middlewares");
+const { findById } = require("../models/user");
 
 //POST editProfile
 
@@ -41,5 +41,23 @@ profileRouter.post(
     }
   }
 );
+
+//GET profile/:id
+
+profileRouter.get("/:id", isLoggedIn(), async (req, res, next) => {
+  userId = req.params.id;
+  try {
+    const userFound = await User.findById(userId);
+    if (!userFound) {
+      res.status(400).json({ message: "User not found" });
+      return;
+    } else {
+      res.status(200).json(userFound);
+      return;
+    }
+  } catch (error) {
+    console.log("Error while searching profile");
+  }
+});
 
 module.exports = profileRouter;

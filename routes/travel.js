@@ -10,6 +10,7 @@ const {
   isNotLoggedIn,
   validationLoggin,
 } = require("../helpers/middlewares");
+const { response } = require("express");
 
 // POST createTravel
 travelRouter.post(
@@ -21,7 +22,14 @@ travelRouter.post(
       ? req.file.secure_url
       : "./images/cover-travel.jpg";
 
-    const { travelName, startDate, endDate, origin, destination } = req.body;
+    const {
+      travelName,
+      startDate,
+      endDate,
+      origin,
+      destination,
+      isPublic,
+    } = req.body;
 
     if (
       travelName === "" ||
@@ -42,11 +50,12 @@ travelRouter.post(
         destination,
         owner: req.session.currentUser._id,
         travelMembers: [req.session.currentUser._id],
+        isPublic,
       });
       res.status(200).json(newTravel);
       return;
     } catch (error) {
-      console.log('Error while creating new travel.',error);
+      console.log("Error while creating new travel.", error);
     }
   }
 );
@@ -71,7 +80,7 @@ travelRouter.post(
       res.status(200).json(travelFound);
       return;
     } catch (error) {
-      console.log('Error while editing travel', error);
+      console.log("Error while editing travel", error);
     }
   }
 );
@@ -88,7 +97,44 @@ travelRouter.post("/delete/:id", isLoggedIn(), async (req, res, next) => {
       return;
     }
   } catch (error) {
-    console.log('Error while deleting travel', error);
+    console.log("Error while deleting travel", error);
+  }
+});
+
+//GET travel
+
+travelRouter.get("/", isLoggedIn(), async (req, res, next) => {
+  try {
+    const allTravels = await Travel.find()
+      .populate("travelMembers")
+      .populate("owner");
+    if (allTravels.length == 0) {
+      res.status(200).json({ message: "Travels are empty" });
+      return;
+    } else {
+      res.status(200).json(allTravels);
+      return;
+    }
+  } catch (error) {
+    console.log("Error while getting travels");
+  }
+});
+
+//GET travel/:id
+travelRouter.get("/:id", isLoggedIn(), async (req, res, next) => {
+  const travelId = req.params.id;
+
+  try {
+    const travelFound = await Travel.findById(travelId).populate("tasks");
+    if (!travelFound) {
+      res.status(400).json({ message: "Travel not found" });
+      return;
+    } else {
+      res.status(200).json(travelFound);
+      return;
+    }
+  } catch (error) {
+    console.log("Error while searching travel");
   }
 });
 
