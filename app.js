@@ -14,6 +14,7 @@ const auth = require("./routes/auth");
 const travelRouter = require("./routes/travel");
 const taskRouter = require('./routes/task');
 const profileRouter = require('./routes/profile');
+const inviteRouter = require('./routes/invite')
 
 // MONGOOSE CONNECTION
 mongoose
@@ -71,6 +72,7 @@ app.use("/", auth);
 app.use('/travel', travelRouter);
 app.use('/task', taskRouter);
 app.use('/profile', profileRouter);
+app.use('/invite', inviteRouter);
 
 
 
