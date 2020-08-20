@@ -25,7 +25,7 @@ const userSchema = new Schema(
         ref: "Travel",
       },
     ],
-    asignTasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
+    assignTasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
   },
   {
     timestamps: {

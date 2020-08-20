@@ -3,13 +3,14 @@ const Schema = mongoose.Schema;
 
 const taskSchema = new Schema(
   {
-    taskName: {type: String, required: true},
+    taskName: { type: String, required: true },
     taskCreator: { type: Schema.Types.ObjectId, ref: "User" },
     taskDeadline: { type: Date, default: null },
-    taskNote: {type: String, default: null},
+    taskNote: { type: String, default: null },
     assignTo: [{ type: Schema.Types.ObjectId, ref: "User", default: null }],
     doneTask: { type: Boolean, default: false },
-    completedBy: {type: Schema.Types.ObjectId, ref: 'User', default: null}
+    completedBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    includesInTravel: { type: Schema.Types.ObjectId, ref: "Travel" },
   },
   {
     timestamps: {

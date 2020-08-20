@@ -10,6 +10,7 @@ const travelSchema = new Schema(
     destination: { type: String, required: true },
     coverPic: { type: String },
     files: [{ type: String }],
+    isPublic: { type: Boolean, default: false },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
