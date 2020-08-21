@@ -12,9 +12,9 @@ const cors = require("cors");
 
 const auth = require("./routes/auth");
 const travelRouter = require("./routes/travel");
-const taskRouter = require('./routes/task');
-const profileRouter = require('./routes/profile');
-const inviteRouter = require('./routes/invite')
+const taskRouter = require("./routes/task");
+const profileRouter = require("./routes/profile");
+const inviteRouter = require("./routes/invite");
 
 // MONGOOSE CONNECTION
 mongoose
@@ -33,7 +33,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: [process.env.PUBLIC_DOMAIN],
+    origin: [process.env.PUBLIC_DOMAIN, "https://travel-with-a163a.web.app"],
   })
 );
 // app.use((req, res, next) => {
@@ -69,12 +69,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTER MIDDLEWARE
 app.use("/", auth);
-app.use('/travel', travelRouter);
-app.use('/task', taskRouter);
-app.use('/profile', profileRouter);
-app.use('/invite', inviteRouter);
-
-
+app.use("/travel", travelRouter);
+app.use("/task", taskRouter);
+app.use("/profile", profileRouter);
+app.use("/invite", inviteRouter);
 
 // ERROR HANDLING
 // catch 404 and forward to error handler
