@@ -33,7 +33,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: [process.env.PUBLIC_DOMAIN, "https://travel-with-a163a.web.app"],
+    origin: [process.env.PUBLIC_DOMAIN],
   })
 );
 // app.use((req, res, next) => {
