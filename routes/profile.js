@@ -46,7 +46,7 @@ profileRouter.post(
 profileRouter.get("/:id", isLoggedIn(), async (req, res, next) => {
   userId = req.params.id;
   try {
-    const userFound = await User.findById(userId);
+    const userFound = await User.findById(userId).populate('pendingInvitation').populate('joinTravels')
     if (!userFound) {
       res.status(400).json({ message: "User not found" });
       return;

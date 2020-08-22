@@ -55,6 +55,7 @@ travelRouter.post(
         owner: req.session.currentUser._id,
         travelMembers: [req.session.currentUser._id],
         isPublic,
+        coverPic,
       });
       res.status(200).json(newTravel);
       return;
@@ -72,12 +73,12 @@ travelRouter.post(
   async (req, res, next) => {
     const travelId = req.params.id;
     const { travelName, startDate, endDate, origin, destination } = req.body;
-    // const coverPic = req.file ? req.file.secure_url : travelFound.coverPic;
+    const coverPic = req.file ? req.file.secure_url : travelFound.coverPic;
 
     try {
       const travelFound = await Travel.findByIdAndUpdate(
         travelId,
-        { travelName, startDate, endDate, origin, destination },
+        { travelName, startDate, endDate, origin, destination, coverPic },
         { new: true }
       );
 
