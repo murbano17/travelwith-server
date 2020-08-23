@@ -55,6 +55,7 @@ travelRouter.post(
         owner: req.session.currentUser._id,
         travelMembers: [req.session.currentUser._id],
         isPublic,
+        coverPic,
       });
       res.status(200).json(newTravel);
       return;
