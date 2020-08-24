@@ -15,11 +15,10 @@ const {
 profileRouter.post(
   "/edit/:id",
   isLoggedIn(),
-  parser.single("profilePic"),
   async (req, res, next) => {
     const { username, userFrom, userBirthdate, about } = req.body;
-    const profilePic = req.file
-      ? req.file.secure_url
+    const profilePic = req.body.profilePic
+      ? req.body.profilePic
       : req.session.currentUser.profilePic;
     const userId = req.params.id;
 
@@ -46,7 +45,7 @@ profileRouter.post(
 profileRouter.get("/:id", isLoggedIn(), async (req, res, next) => {
   userId = req.params.id;
   try {
-    const userFound = await User.findById(userId).populate('pendingInvitation').populate('joinTravels')
+    const userFound = await User.findById(userId).populate('pendingInvitation').populate('joinTravels').populate('ownTravels')
     if (!userFound) {
       res.status(400).json({ message: "User not found" });
       return;

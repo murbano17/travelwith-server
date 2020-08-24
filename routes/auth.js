@@ -20,11 +20,10 @@ router.post(
   "/signup",
   isNotLoggedIn(),
   validationLoggin(),
-  parser.single("profilePic"),
   async (req, res, next) => {
-    const profilePic = req.file
-      ? req.file.secure_url
-      : "./images/profile-picture.png";
+    const profilePic = req.body.profilePic
+      ? req.body.profilePic
+      : '/images/profile-picture.png'
     const {
       username,
       password,

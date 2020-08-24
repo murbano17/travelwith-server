@@ -17,53 +17,53 @@ const { response } = require("express");
 const inviteRoute = require("./invite");
 
 // POST createTravel
-travelRouter.post(
-  "/create",
-  isLoggedIn(),
-  parser.single("coverPic"),
-  async (req, res, next) => {
-    const coverPic = req.file
-      ? req.file.secure_url
-      : "./images/cover-travel.jpg";
+travelRouter.post("/create", isLoggedIn(), async (req, res, next) => {
+  const coverPic = req.body.coverPic
+    ? req.body.coverPic
+    : "/images/cover-travel.jpg";
 
-    const {
+  const {
+    travelName,
+    startDate,
+    endDate,
+    origin,
+    destination,
+    isPublic,
+  } = req.body;
+
+  if (
+    travelName === "" ||
+    startDate === "" ||
+    endDate === "" ||
+    origin === "" ||
+    destination === " "
+  ) {
+    next(createError(400));
+  }
+
+  try {
+    const newTravel = await Travel.create({
       travelName,
       startDate,
       endDate,
       origin,
       destination,
+      owner: req.session.currentUser._id,
+      travelMembers: [req.session.currentUser._id],
       isPublic,
-    } = req.body;
-
-    if (
-      travelName === "" ||
-      startDate === "" ||
-      endDate === "" ||
-      origin === "" ||
-      destination === " "
-    ) {
-      next(createError(400));
-    }
-
-    try {
-      const newTravel = await Travel.create({
-        travelName,
-        startDate,
-        endDate,
-        origin,
-        destination,
-        owner: req.session.currentUser._id,
-        travelMembers: [req.session.currentUser._id],
-        isPublic,
-        coverPic,
-      });
-      res.status(200).json(newTravel);
-      return;
-    } catch (error) {
-      console.log("Error while creating new travel.", error);
-    }
+      coverPic,
+    });
+    const userFound = await User.findByIdAndUpdate(
+      req.session.currentUser._id,
+      { $push: {ownTravels: newTravel._id} },
+      { new: true }
+    )
+    res.status(200).json(newTravel);
+    return;
+  } catch (error) {
+    console.log("Error while creating new travel.", error);
   }
-);
+});
 
 //POST editTravel
 travelRouter.post(
