@@ -15,6 +15,7 @@ const travelRouter = require("./routes/travel");
 const taskRouter = require("./routes/task");
 const profileRouter = require("./routes/profile");
 const inviteRouter = require("./routes/invite");
+const uploadRouter = require("./routes/upload");
 
 // MONGOOSE CONNECTION
 mongoose
@@ -73,6 +74,7 @@ app.use("/travel", travelRouter);
 app.use("/task", taskRouter);
 app.use("/profile", profileRouter);
 app.use("/invite", inviteRouter);
+app.use("/upload", uploadRouter);
 
 // ERROR HANDLING
 // catch 404 and forward to error handler
