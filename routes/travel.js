@@ -112,7 +112,8 @@ travelRouter.get("/", isLoggedIn(), async (req, res, next) => {
   try {
     const allTravels = await Travel.find()
       .populate("travelMembers")
-      .populate("owner");
+      .populate("owner")
+      .populate('tasks');
     if (allTravels.length == 0) {
       res.status(200).json({ message: "Travels are empty" });
       return;
