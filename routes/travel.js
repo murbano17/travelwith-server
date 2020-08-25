@@ -3,7 +3,7 @@ const travelRouter = express.Router();
 const createError = require("http-errors");
 const parser = require("./../config/cloudinary");
 const Travel = require("../models/Travel");
-const User = require("../models/user");
+const User = require("../models/User");
 const Invite = require("../models/Invite");
 const Task = require("../models/Task");
 

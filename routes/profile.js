@@ -1,7 +1,7 @@
 const express = require("express");
 const parser = require("./../config/cloudinary");
 const profileRouter = express.Router();
-const User = require("../models/user");
+const User = require("../models/User");
 
 // HELPER functions
 const {

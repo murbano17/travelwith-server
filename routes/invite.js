@@ -1,7 +1,7 @@
 const express = require("express");
 const inviteRoute = express.Router();
 const createError = require("http-errors");
-const User = require("../models/user");
+const User = require("../models/User");
 
 const {
   isLoggedIn,
