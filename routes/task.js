@@ -38,7 +38,7 @@ const {
 
 taskRouter.post("/edit/:id", isLoggedIn(), async (req, res, next) => {
   const taskId = req.params.id;
-  const { taskName, taskDeadline, assignTo, taskNote } = req.body;
+  const { taskName, taskDeadline, assignTo, taskNote, doneTask } = req.body;
   try {
     const taskFound = await Task.findByIdAndUpdate(
       taskId,
@@ -47,6 +47,7 @@ taskRouter.post("/edit/:id", isLoggedIn(), async (req, res, next) => {
         taskDeadline,
         assignTo,
         taskNote,
+        doneTask
       },
       { new: true }
     );
