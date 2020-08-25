@@ -96,4 +96,10 @@ router.get("/", isLoggedIn(), (req, res, next) => {
   res.status(200).json({ message: "User is logged in " });
 });
 
+//GET '/me'
+router.get('/me', isLoggedIn(), (req, res, next) => {
+  req.session.currentUser.password = '*'
+  res.json(req.session.currentUser)
+})
+
 module.exports = router;
