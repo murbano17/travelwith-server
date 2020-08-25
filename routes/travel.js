@@ -13,8 +13,6 @@ const {
   isNotLoggedIn,
   validationLoggin,
 } = require("../helpers/middlewares");
-const { response } = require("express");
-const inviteRoute = require("./invite");
 
 // POST createTravel
 travelRouter.post("/create", isLoggedIn(), async (req, res, next) => {
