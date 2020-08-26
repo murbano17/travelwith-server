@@ -13,7 +13,7 @@ const Invite = require("../models/Invite");
 //GET /invite
 inviteRoute.get("/", isLoggedIn(), async (req, res, next) => {
   try {
-    const inviteList = await Invite.find();
+    const inviteList = await Invite.find().populate('inviteTo')
     if (inviteList.length === 0) {
       res.status(200).json({ message: "InviteList is empty." });
       return;
