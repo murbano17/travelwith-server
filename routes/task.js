@@ -66,11 +66,11 @@ taskRouter.post("/delete/:id", isLoggedIn(), async (req, res, next) => {
 
   try {
     const taskFound = await Task.findById(taskId);
-    if (taskFound.taskCreator == req.session.currentUser._id) {
+    // if (taskFound.taskCreator == req.session.currentUser._id) {
       await Task.findByIdAndDelete(taskId);
       res.status(200).json({ message: "Task erased successfully." });
       return;
-    }
+    // }
   } catch (error) {
     console.log("Error while deleting task", error);
   }
