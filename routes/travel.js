@@ -64,18 +64,35 @@ travelRouter.post("/create", isLoggedIn(), async (req, res, next) => {
 });
 
 //POST editTravel
-travelRouter.post("/edit/:id", isLoggedIn(), async (req, res, next) => {
+travelRouter.patch("/edit/:id", isLoggedIn(), async (req, res, next) => {
   const travelId = req.params.id;
-  const previousTravel = await Travel.findById(travelId);
-  const { travelName, startDate, endDate, origin, destination } = req.body;
-  const coverPic = req.body.coverPic
-    ? req.body.coverPic
-    : previousTravel.coverPic;
+
+  const {
+    travelName,
+    startDate,
+    endDate,
+    origin,
+    destination,
+    isPublic,
+  } = req.body;
 
   try {
+    const previousTravel = await Travel.findById(travelId);
+    const coverPic = req.body.coverPic
+      ? req.body.coverPic
+      : previousTravel.coverPic;
+
     const travelFound = await Travel.findByIdAndUpdate(
       travelId,
-      { travelName, startDate, endDate, origin, destination, coverPic },
+      {
+        travelName,
+        startDate,
+        endDate,
+        origin,
+        destination,
+        coverPic,
+        isPublic,
+      },
       { new: true }
     );
     res.status(200).json(travelFound);
@@ -155,9 +172,9 @@ travelRouter.post("/:id/createinvite", isLoggedIn(), async (req, res, next) => {
         { $push: { invitationList: newInvite } },
         { new: true }
       );
-      const userFound = await User.findOne({email: guestEmail})
+      const userFound = await User.findOne({ email: guestEmail });
       if (userFound) {
-        userFound.pendingInvitation.push(newInvite)
+        userFound.pendingInvitation.push(newInvite);
       }
       // const userFound = await User.findByIdAndUpdate(
       //   userId,
