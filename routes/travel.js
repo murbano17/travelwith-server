@@ -53,9 +53,9 @@ travelRouter.post("/create", isLoggedIn(), async (req, res, next) => {
     });
     const userFound = await User.findByIdAndUpdate(
       req.session.currentUser._id,
-      { $push: {ownTravels: newTravel._id} },
+      { $push: { ownTravels: newTravel._id } },
       { new: true }
-    )
+    );
     res.status(200).json(newTravel);
     return;
   } catch (error) {
@@ -64,29 +64,26 @@ travelRouter.post("/create", isLoggedIn(), async (req, res, next) => {
 });
 
 //POST editTravel
-travelRouter.post(
-  "/edit/:id",
-  isLoggedIn(),
-  parser.single("coverPic"),
-  async (req, res, next) => {
-    const travelId = req.params.id;
-    const { travelName, startDate, endDate, origin, destination } = req.body;
-    const coverPic = req.file ? req.file.secure_url : travelFound.coverPic;
+travelRouter.post("/edit/:id", isLoggedIn(), async (req, res, next) => {
+  const travelId = req.params.id;
+  const previousTravel = await Travel.findById(travelId);
+  const { travelName, startDate, endDate, origin, destination } = req.body;
+  const coverPic = req.body.coverPic
+    ? req.body.coverPic
+    : previousTravel.coverPic;
 
-    try {
-      const travelFound = await Travel.findByIdAndUpdate(
-        travelId,
-        { travelName, startDate, endDate, origin, destination, coverPic },
-        { new: true }
-      );
-
-      res.status(200).json(travelFound);
-      return;
-    } catch (error) {
-      console.log("Error while editing travel", error);
-    }
+  try {
+    const travelFound = await Travel.findByIdAndUpdate(
+      travelId,
+      { travelName, startDate, endDate, origin, destination, coverPic },
+      { new: true }
+    );
+    res.status(200).json(travelFound);
+    return;
+  } catch (error) {
+    console.log("Error while editing travel", error);
   }
-);
+});
 
 //POST deleteTravel
 travelRouter.post("/delete/:id", isLoggedIn(), async (req, res, next) => {
@@ -111,7 +108,7 @@ travelRouter.get("/", isLoggedIn(), async (req, res, next) => {
     const allTravels = await Travel.find()
       .populate("travelMembers")
       .populate("owner")
-      .populate('tasks');
+      .populate("tasks");
     if (allTravels.length == 0) {
       res.status(200).json({ message: "Travels are empty" });
       return;
