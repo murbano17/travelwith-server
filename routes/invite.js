@@ -26,5 +26,22 @@ inviteRoute.get("/", isLoggedIn(), async (req, res, next) => {
   }
 });
 
+//POST deleteInvite
+inviteRoute.post('/:id/delete', isLoggedIn(), async(req, res, next) => {
+  const inviteId = req.params.id;
+
+  try {
+    const inviteFound = await Invite.findById(inviteId);
+    if(inviteFound.guestEmail == req.session.currentUser.email) {
+      await Invite.findByIdAndDelete(inviteId);
+      res.status(200).json({message: 'Invite deleted by user'});
+      return;
+    }
+  } catch (error) {
+    console.log('Error while deleting invite', error);
+    
+  }
+})
+
 
 module.exports = inviteRoute;
