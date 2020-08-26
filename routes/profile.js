@@ -12,7 +12,7 @@ const {
 
 //POST editProfile
 
-profileRouter.post(
+profileRouter.patch(
   "/edit/:id",
   isLoggedIn(),
   async (req, res, next) => {
