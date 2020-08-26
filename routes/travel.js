@@ -66,35 +66,19 @@ travelRouter.post("/create", isLoggedIn(), async (req, res, next) => {
 //POST editTravel
 travelRouter.patch("/edit/:id", isLoggedIn(), async (req, res, next) => {
   const travelId = req.params.id;
-
-  const {
-    travelName,
-    startDate,
-    endDate,
-    origin,
-    destination,
-    isPublic,
-  } = req.body;
-
+  const { travelName, startDate, endDate, origin, destination, isPublic } = req.body;
   try {
-    const previousTravel = await Travel.findById(travelId);
+    const originalTravel = await Travel.findById(travelId);
     const coverPic = req.body.coverPic
       ? req.body.coverPic
-      : previousTravel.coverPic;
+      : originalTravel.coverPic;
 
     const travelFound = await Travel.findByIdAndUpdate(
       travelId,
-      {
-        travelName,
-        startDate,
-        endDate,
-        origin,
-        destination,
-        coverPic,
-        isPublic,
-      },
+      { travelName, startDate, endDate, origin, destination, coverPic, isPublic },
       { new: true }
     );
+
     res.status(200).json(travelFound);
     return;
   } catch (error) {
