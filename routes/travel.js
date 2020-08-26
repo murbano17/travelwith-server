@@ -158,11 +158,11 @@ travelRouter.post("/:id/createinvite", isLoggedIn(), async (req, res, next) => {
         { $push: { invitationList: newInvite } },
         { new: true }
       );
-      const userFound = await User.findByIdAndUpdate(
-        userId,
-        { $push: { pendingInvitation: newInvite } },
-        { new: true }
-      );
+      // const userFound = await User.findByIdAndUpdate(
+      //   userId,
+      //   { $push: { pendingInvitation: newInvite } },
+      //   { new: true }
+      // );
       res.status(200).json(newInvite);
       return;
     }
