@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 const travelSchema = new Schema(
   {
     travelName: { type: String, required: true },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true },
+    startDate: { type: String, required: true },
+    endDate: { type: String, required: true },
     origin: { type: String, required: true },
     destination: { type: String, required: true },
     coverPic: { type: String },
