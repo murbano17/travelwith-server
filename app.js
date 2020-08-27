@@ -34,15 +34,21 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: [process.env.PUBLIC_DOMAIN],
+    origin: [process.env.PUBLIC_DOMAIN, 'https://travel-with.herokuapp.com','http://travel-with.herokuapp.com' ], 
   })
 );
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', process.env.PUBLIC_DOMAIN);
-  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader("Access-Control-Allow-Origin", process.env.PUBLIC_DOMAIN);
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, PUT, POST, OPTIONS, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
 
@@ -76,6 +82,12 @@ app.use("/task", taskRouter);
 app.use("/profile", profileRouter);
 app.use("/invite", inviteRouter);
 app.use("/upload", uploadRouter);
+
+// ROUTE FOR SERVING REACT APP (index.html)
+app.use((req, res) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "/public/index.html");
+});
 
 // ERROR HANDLING
 // catch 404 and forward to error handler

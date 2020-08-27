@@ -18,7 +18,7 @@ const {
 travelRouter.post("/create", isLoggedIn(), async (req, res, next) => {
   const coverPic = req.body.coverPic
     ? req.body.coverPic
-    : "/images/cover-travel.jpg";
+    : "../assets/images/cover-travel.jpg";
 
   const {
     travelName,
@@ -66,7 +66,14 @@ travelRouter.post("/create", isLoggedIn(), async (req, res, next) => {
 //POST editTravel
 travelRouter.patch("/edit/:id", isLoggedIn(), async (req, res, next) => {
   const travelId = req.params.id;
-  const { travelName, startDate, endDate, origin, destination, isPublic } = req.body;
+  const {
+    travelName,
+    startDate,
+    endDate,
+    origin,
+    destination,
+    isPublic,
+  } = req.body;
   try {
     const originalTravel = await Travel.findById(travelId);
     const coverPic = req.body.coverPic
@@ -75,7 +82,15 @@ travelRouter.patch("/edit/:id", isLoggedIn(), async (req, res, next) => {
 
     const travelFound = await Travel.findByIdAndUpdate(
       travelId,
-      { travelName, startDate, endDate, origin, destination, coverPic, isPublic },
+      {
+        travelName,
+        startDate,
+        endDate,
+        origin,
+        destination,
+        coverPic,
+        isPublic,
+      },
       { new: true }
     );
 

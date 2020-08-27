@@ -23,7 +23,7 @@ router.post(
   async (req, res, next) => {
     const profilePic = req.body.profilePic
       ? req.body.profilePic
-      : '/images/profile-picture.png'
+      : '../assets/images/profile-picture.png'
     const {
       username,
       password,
