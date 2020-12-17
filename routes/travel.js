@@ -18,7 +18,7 @@ const {
 travelRouter.post("/create", isLoggedIn(), async (req, res, next) => {
   const coverPic = req.body.coverPic
     ? req.body.coverPic
-    : "../assets/images/cover-travel.jpg";
+    : "/images/cover-travel.jpg";
 
   const {
     travelName,
@@ -142,7 +142,10 @@ travelRouter.get("/:id", isLoggedIn(), async (req, res, next) => {
   const travelId = req.params.id;
 
   try {
-    const travelFound = await Travel.findById(travelId).populate("tasks");
+    const travelFound = await Travel.findById(travelId)
+      .populate("travelMembers")
+      .populate("owner")
+      .populate("tasks");
     if (!travelFound) {
       res.status(400).json({ message: "Travel not found" });
       return;
@@ -248,8 +251,9 @@ travelRouter.post("/:id/join", isLoggedIn(), async (req, res, next) => {
         { $pull: { invitationList: invitationFound._id } },
         { new: true }
       );
-      res.status(200).json(userFound);
-      return;
+      res.status(200).json({ message: "Join correctly" });
+      /*       return;
+       */
     }
   } catch (error) {
     console.log("Error while joining a travel.", error);

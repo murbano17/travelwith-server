@@ -76,12 +76,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTER MIDDLEWARE
-app.use("/", auth);
-app.use("/travel", travelRouter);
-app.use("/task", taskRouter);
-app.use("/profile", profileRouter);
-app.use("/invite", inviteRouter);
-app.use("/upload", uploadRouter);
+app.use("/api", auth);
+app.use("/api/travel", travelRouter);
+app.use("/api/task", taskRouter);
+app.use("/api/profile", profileRouter);
+app.use("/api/invite", inviteRouter);
+app.use("/api/upload", uploadRouter);
 
 // ROUTE FOR SERVING REACT APP (index.html)
 app.use((req, res) => {
