@@ -23,7 +23,7 @@ router.post(
   async (req, res, next) => {
     const profilePic = req.body.profilePic
       ? req.body.profilePic
-      : '/images/profile-picture.png'
+      : "/images/profile-picture.png";
     const {
       username,
       password,
@@ -39,7 +39,7 @@ router.post(
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashPass = bcrypt.hashSync(password, salt);
         const emailHasInvitation = await Invite.find({ guestEmail: email });
-        
+
         const newUser = await User.create({
           username,
           password: hashPass,
@@ -97,9 +97,16 @@ router.get("/", isLoggedIn(), (req, res, next) => {
 });
 
 //GET '/me'
-router.get('/me', isLoggedIn(), (req, res, next) => {
-  req.session.currentUser.password = '*'
-  res.json(req.session.currentUser)
-})
+router.get("/me", isLoggedIn(), (req, res, next) => {
+  req.session.currentUser.password = "*";
+  res.json(req.session.currentUser);
+});
 
+//GET 'user'
+
+router.get("/user/:id", isLoggedIn(), async (req, res, next) => {
+  const idUser = req.params.id;
+  const userFound = await User.findById(idUser);
+  res.json(userFound);
+});
 module.exports = router;
